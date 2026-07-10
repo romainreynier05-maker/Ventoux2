@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Ventoux 2026</title>
+<style>
+  :root{
+    --bg:#0f1512; --card:#161f1a; --card2:#1c2620; --border:#2a362f;
+    --green:#4ade80; --green-dim:#2d5a3f; --orange:#fb923c; --red:#f87171;
+    --text:#e8ede9; --text-dim:#8b978f; --blue:#60a5fa;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg); color:var(--text); padding-bottom:78px;
+    min-height:100vh;
+  }
+  header{
+    padding:16px 16px 10px; position:sticky; top:0; z-index:10;
+    background:linear-gradient(180deg,var(--bg) 80%,transparent);
+  }
+  .title-row{display:flex; align-items:center; justify-content:space-between;}
+  h1{font-size:19px; margin:0; font-weight:700; letter-spacing:-0.3px;}
+  .badge{font-size:11px; color:var(--text-dim); background:var(--card2); padding:3px 8px; border-radius:20px;}
+  .countdown{
+    margin-top:12px; background:linear-gradient(135deg,var(--card2),var(--card)); border:1px solid var(--border);
+    border-radius:16px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between;
+  }
+  .countdown .num{font-size:32px; font-weight:800; color:var(--green); line-height:1;}
+  .countdown .label{font-size:12px; color:var(--text-dim); margin-top:2px;}
+  .countdown .date{font-size:13px; color:var(--text); text-align:right;}
+  .countdown .date b{color:var(--orange);}
+  main{padding:0 16px 20px;}
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:16px;
+    padding:16px; margin-bottom:12px;
+  }
+  .card h2{font-size:15px; margin:0 0 10px; color:var(--green); display:flex; align-items:center; gap:6px;}
+  .card h3{font-size:13px; margin:14px 0 8px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.5px;}
+  .row{display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border);}
+  .row:last-child{border-bottom:none;}
+  .pill{font-size:11px; padding:3px 9px; border-radius:20px; font-weight:600;}
+  .pill.z1{background:#1e3a2f; color:#6ee7b7;}
+  .pill.z2{background:#1e3a4f; color:#7dd3fc;}
+  .pill.z3{background:#4a3a1e; color:#fcd34d;}
+  .pill.z4{background:#4a1e1e; color:#fca5a5;}
+  .pill.recup{background:#2a2a3a; color:#c4b5fd;}
+  .task{
+    display:flex; align-items:flex-start; gap:12px; padding:12px; background:var(--card2);
+    border-radius:12px; margin-bottom:8px; border:1px solid transparent;
+  }
+  .task.done{opacity:0.5; border-color:var(--green-dim);}
+  .checkbox{
+    width:24px; height:24px; border-radius:7px; border:2px solid var(--text-dim);
+    flex-shrink:0; display:flex; align-items:center; justify-content:center; margin-top:1px;
+  }
+  .checkbox.checked{background:var(--green); border-color:var(--green);}
+  .checkbox.checked::after{content:'✓'; color:#0f1512; font-weight:800; font-size:15px;}
+  .checkbox.missed{background:var(--red); border-color:var(--red);}
+  .checkbox.missed::after{content:'✕'; color:#2e1214; font-weight:800; font-size:13px;}
+  .status-controls{display:flex; align-items:center; gap:8px; margin-top:2px;}
+  .miss-btn{
+    font-size:11px; padding:4px 10px; border-radius:20px; border:1px solid var(--border);
+    background:var(--card2); color:var(--text-dim); font-family:inherit;
+  }
+  .miss-btn.active{background:#4a1e1e; color:#fca5a5; border-color:#6b2a2a;}
+  .quick-item{
+    display:flex; align-items:center; justify-content:space-between; padding:10px 0;
+    border-bottom:1px solid var(--border); gap:8px;
+  }
+  .quick-item:last-child{border-bottom:none;}
+  .quick-item .qi-info{flex:1;}
+  .quick-item .qi-date{font-size:11px; color:var(--text-dim);}
+  .quick-item .qi-name{font-size:13px; font-weight:600;}
+  .quick-actions{display:flex; gap:6px; flex-shrink:0;}
+  .qa-btn{font-size:11px; padding:6px 10px; border-radius:8px; border:1px solid var(--border); background:var(--card2); color:var(--text); font-family:inherit;}
+  .qa-btn.ok{color:var(--green); border-color:var(--green-dim);}
+  .qa-btn.no{color:var(--red); border-color:#6b2a2a;}
+  .banner{border-radius:14px; padding:14px; margin-bottom:12px; font-size:13.5px; line-height:1.5;}
+  .banner.ok{background:#152a1e; border:1px solid var(--green-dim); color:#bde5c8;}
+  .banner.warn{background:#2e2418; border:1px solid #5a4a2a; color:#f5dcae;}
+  .banner.danger{background:#2e1e1e; border:1px solid #6b2a2a; color:#f5c2c2;}
+  .week-stat-row{display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--border);}
+  .week-stat-row:last-child{border-bottom:none;}
+  .week-stat-row .wn{width:36px; flex-shrink:0; font-weight:700; font-size:12px; color:var(--text-dim);}
+  .mini-bar{flex:1; height:8px; background:var(--card2); border-radius:4px; overflow:hidden; display:flex;}
+  .mini-bar .seg-done{background:var(--green);}
+  .mini-bar .seg-missed{background:var(--red);}
+  .mini-bar .seg-unresolved{background:#3a3a2a;}
+  .alert-check{display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px;}
+  .alert-check:last-child{border-bottom:none;}
+  .task-body{flex:1;}
+  .task-title{font-size:14.5px; font-weight:600; margin-bottom:3px;}
+  .task-meta{font-size:12px; color:var(--text-dim);}
+  .task-note{font-size:12px; color:var(--text-dim); margin-top:4px; font-style:italic;}
+  .tip{
+    background:#1e2a1e; border-left:3px solid var(--green); padding:10px 12px; border-radius:8px;
+    font-size:13px; color:#bde5c8; margin-top:10px; line-height:1.4;
+  }
+  .warn{
+    background:#2e1e1e; border-left:3px solid var(--red); padding:10px 12px; border-radius:8px;
+    font-size:13px; color:#f5c2c2; margin-top:10px; line-height:1.4;
+  }
+  .info{
+    background:#1e2530; border-left:3px solid var(--blue); padding:10px 12px; border-radius:8px;
+    font-size:13px; color:#bcd4f5; margin-top:10px; line-height:1.4;
+  }
+  nav{
+    position:fixed; bottom:0; left:0; right:0; background:rgba(15,21,18,0.97);
+    backdrop-filter:blur(10px); border-top:1px solid var(--border);
+    display:flex; padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+    z-index:20;
+  }
+  nav button{
+    flex:1; background:none; border:none; color:var(--text-dim); font-size:10.5px;
+    padding:8px 2px 4px; display:flex; flex-direction:column; align-items:center; gap:3px;
+    font-family:inherit;
+  }
+  nav button .ic{font-size:20px;}
+  nav button.active{color:var(--green);}
+  .week-header{
+    display:flex; justify-content:space-between; align-items:center; cursor:pointer; padding:14px 16px;
+  }
+  .week-header.today{background:linear-gradient(90deg,rgba(74,222,128,0.12),transparent); border-radius:12px;}
+  .week-title{font-weight:700; font-size:14.5px;}
+  .week-sub{font-size:12px; color:var(--text-dim); margin-top:2px;}
+  .chev{color:var(--text-dim); transition:transform 0.2s; font-size:13px;}
+  .chev.open{transform:rotate(90deg);}
+  .week-body{padding:0 16px 14px; display:none;}
+  .week-body.open{display:block;}
+  .day-line{
+    display:flex; justify-content:space-between; align-items:center; padding:9px 10px;
+    border-radius:9px; margin-bottom:5px; font-size:13px;
+  }
+  .day-line.today{background:rgba(74,222,128,0.12); border:1px solid var(--green-dim);}
+  .day-line .d{color:var(--text-dim); width:52px; flex-shrink:0; font-size:11.5px;}
+  .day-line .a{flex:1;}
+  .meta-strip{display:flex; gap:6px; flex-wrap:wrap; margin:10px 0;}
+  .meta-strip span{font-size:11px; background:var(--card2); padding:4px 9px; border-radius:8px; color:var(--text-dim);}
+  .taper-item{
+    display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--border);
+  }
+  .taper-item:last-child{border-bottom:none;}
+  .taper-day{width:56px; flex-shrink:0; text-align:center;}
+  .taper-day .j{font-size:11px; color:var(--orange); font-weight:700;}
+  .taper-day .dt{font-size:11px; color:var(--text-dim); margin-top:2px;}
+  .taper-content{flex:1; font-size:13px; line-height:1.5;}
+  .taper-content b{color:var(--text);}
+  .table-mini{width:100%; border-collapse:collapse; font-size:12.5px; margin-top:6px;}
+  .table-mini th{text-align:left; color:var(--text-dim); font-weight:600; padding:6px 4px; border-bottom:1px solid var(--border); font-size:11px;}
+  .table-mini td{padding:7px 4px; border-bottom:1px solid var(--border); vertical-align:top;}
+  .chk-list-item{display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--border); font-size:13.5px;}
+  .chk-list-item:last-child{border-bottom:none;}
+  .chk-list-item.done{opacity:0.45; text-decoration:line-through;}
+  .subtabs{display:flex; gap:6px; margin-bottom:14px; overflow-x:auto; padding-bottom:2px;}
+  .subtabs button{
+    white-space:nowrap; background:var(--card2); border:1px solid var(--border); color:var(--text-dim);
+    padding:7px 13px; border-radius:20px; font-size:12.5px; font-family:inherit;
+  }
+  .subtabs button.active{background:var(--green-dim); color:var(--green); border-color:var(--green-dim);}
+  .install-tip{
+    font-size:12px; color:var(--text-dim); text-align:center; padding:10px; background:var(--card2);
+    border-radius:10px; margin-bottom:12px; line-height:1.5;
+  }
+  .progress-bar{height:6px; background:var(--card2); border-radius:3px; overflow:hidden; margin-top:8px;}
+  .progress-fill{height:100%; background:var(--green); border-radius:3px; transition:width 0.3s;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title-row">
+    <h1>🚵 Ventoux 2026</h1>
+    <span class="badge" id="week-badge">—</span>
+  </div>
+  <div class="countdown">
+    <div>
+      <div class="num" id="countdown-num">—</div>
+      <div class="label">jours avant le sommet</div>
+    </div>
+    <div class="date">Bédoin<br><b>vendredi 11 sept. 2026</b></div>
+  </div>
+</header>
+
+<main id="main"></main>
+
+<nav>
+  <button data-tab="today" class="active"><span class="ic">📍</span>Aujourd'hui</button>
+  <button data-tab="calendar"><span class="ic">📅</span>Calendrier</button>
+  <button data-tab="taper"><span class="ic">🎯</span>Semaine J</button>
+  <button data-tab="adjust"><span class="ic">🔄</span>Ajuster</button>
+  <button data-tab="nutrition"><span class="ic">🍌</span>Nutrition</button>
+  <button data-tab="gear"><span class="ic">🔧</span>Matériel</button>
+</nav>
+
+<script>
+/* ============ CONFIG ============ */
+const VENTOUX_DATE = new Date(2026, 8, 11); // 11 septembre 2026 (mois 0-indexé) - vrai jour: VENDREDI
+const DAY_NAMES = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+const DAY_SHORT = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+
+function fmtDate(d){
+  return d.getDate() + ' ' + ['jan','fév','mar','avr','mai','juin','juil','août','sep','oct','nov','déc'][d.getMonth()];
+}
+function isoKey(d){
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function addDays(d,n){ const r=new Date(d); r.setDate(r.getDate()+n); return r; }
+function sameDay(a,b){ return isoKey(a)===isoKey(b); }
+
+/* ============ DONNÉES : 12 SEMAINES ============
+   Dates recalées sur le vrai calendrier 2026 (le PDF indiquait le 11 sept. comme un mercredi,
+   c'est en réalité un vendredi — la grille a été décalée de quelques jours pour que la
+   dernière semaine tombe juste). */
+const weeks = [
+{num:1, block:'A', theme:'Fondation aérobie', start:'2026-06-22',
+ volume:'80–90 km', deniv:'200–350 m', charge:'Légère',
+ objectif:"Activer la voie aérobie longue. Habituer le corps à un effort continu de 2h.",
+ mental:"Partez en Z2 STRICT. Si vous roulez avec des amis plus rapides : résistez.",
+ days:[
+  {a:'Repos ou vélotaf léger', z:'z1', vol:'20 km', note:'Récupération active'},
+  {a:'Vélotaf aller-retour (présentiel)', z:'z1', vol:'20 km', note:'Trajet utilitaire'},
+  {a:'Vélotaf + 20 min de côte légère', z:'z2', vol:'22 km / D+80m', note:'Activation neuromusculaire'},
+  {a:'Vélotaf aller-retour (présentiel)', z:'z1', vol:'20 km', note:'Récupération active'},
+  {a:'Repos ou vélotaf léger', z:'recup', vol:'0–20 km', note:'Jambes fraîches pour le week-end'},
+  {a:'Sortie route 50–60 km', z:'z2', vol:'50–60 km / D+200m', note:'Endurance fondamentale — 2h à 2h30'},
+  {a:'Repos total ou balade 30 min', z:'recup', vol:'0–20 km', note:'Récupération complète'},
+ ]},
+{num:2, block:'A', theme:'Consolidation endurance', start:'2026-06-29',
+ volume:'90–100 km', deniv:'350–500 m', charge:'Légère+',
+ objectif:"Développer l'endurance aérobie de base et introduire la sollicitation musculaire en côte.",
+ mental:"La fatigue du mercredi est normale. Dormez 8h.",
+ days:[
+  {a:'Repos', z:'recup', vol:'0 km', note:'Récupération muscles du week-end'},
+  {a:'Vélotaf (présentiel)', z:'z1', vol:'20 km', note:''},
+  {a:'Vélotaf + séance côtes courtes 45 min', z:'z4', vol:'20+15 km / D+200m', note:'Stimulation neuromusculaire'},
+  {a:'Vélotaf (présentiel)', z:'z1', vol:'20 km', note:''},
+  {a:'Vélotaf léger', z:'z1', vol:'20 km', note:'Conservation énergie'},
+  {a:'Sortie route 60–70 km avec D+', z:'z2', vol:'60–70 km / D+350m', note:'Sortie longue avec D+ intégré'},
+  {a:'Récupération active 30–45 min', z:'z1', vol:'20–30 km', note:'Jambes légères'},
+ ]},
+{num:3, block:'A', theme:'Sortie longue 3h — Consolidation bloc A', start:'2026-07-06',
+ volume:'100–115 km', deniv:'500–700 m', charge:'Moyenne',
+ objectif:"Habituer le système cardio-vasculaire à un effort de 3h. Début adaptation aux graisses.",
+ mental:"Emportez de quoi manger. Première expérience ravitaillement vélo.",
+ days:[
+  {a:'Repos', z:'recup', vol:'0 km', note:''},
+  {a:'Vélotaf (présentiel)', z:'z1', vol:'20 km', note:''},
+  {a:'Vélotaf + côtes tempo 1h', z:'z3', vol:'20+20 km / D+250m', note:'Tempo sur côte Luère ou équivalent'},
+  {a:'Vélotaf (présentiel)', z:'z1', vol:'20 km', note:''},
+  {a:'Repos', z:'recup', vol:'0 km', note:'Avant sortie longue samedi'},
+  {a:'Sortie longue 75–85 km', z:'z2', vol:'75–85 km / D+500m', note:'Objectif 3h en selle — premier D+ significatif'},
+  {a:'Sortie courte 35–45 km récup', z:'z1', vol:'35–45 km', note:'Jambes sans forcer'},
+ ]},
+{num:4, block:"A'", theme:'Semaine légère — Récupération', start:'2026-07-13',
+ volume:'60–70 km', deniv:'150–200 m', charge:'Légère ↓',
+ objectif:"Supercompensation du bloc A. Le corps progresse PENDANT la récupération, pas pendant l'effort.",
+ mental:"Profitez — c'est prévu. Ne compensez pas avec du sport extra.",
+ days:[
+  {a:'Repos', z:'recup', vol:'0 km', note:'Récupération complète'},
+  {a:'Vélotaf (présentiel)', z:'z1', vol:'20 km', note:''},
+  {a:'Sortie facile 40 km', z:'z2', vol:'40 km / D+100m', note:'Aucune sollicitation intense'},
+  {a:'Vélotaf (présentiel)', z:'z1', vol:'20 km', note:''},
+  {a:'Repos ou vélotaf léger', z:'recup', vol:'0–20 km', note:'Fraîcheur'},
+  {a:'Sortie plaisir 50 km', z:'z2', vol:'50 km / D+150m', note:'Aucun effort — paysage'},
+  {a:'Repos total', z:'recup', vol:'0 km', note:'Supercompensation'},
+ ]},
+{num:5, block:'B', theme:'Intervalles + sortie longue 3h30', start:'2026-07-20',
+ volume:'120–130 km', deniv:'700–900 m', charge:'Moyenne',
+ objectif:"Développer le seuil anaérobie et l'endurance longue simultanément.",
+ mental:"Les intervalles font peur au départ. Pas de perfection demandée.",
+ days:[
+  {a:'Repos', z:'recup', vol:'0 km', note:''},
+  {a:'Vélotaf (présentiel)', z:'z1', vol:'20 km', note:''},
+  {a:'Vélotaf + Intervalles 5×5 min', z:'z4', vol:'20+15 km / D+200m', note:'Premier travail seuil'},
+  {a:'Vélotaf (présentiel)', z:'z2', vol:'20 km', note:''},
+  {a:'Sortie endurance 50 km', z:'z2', vol:'50 km / D+200m', note:'Solidifier la base'},
+  {a:'Sortie longue 85–95 km avec D+', z:'z3', vol:'85–95 km / D+700m', note:'Objectif 3h30 — col à intégrer'},
+  {a:'Récupération active 30 km', z:'z1', vol:'30 km', note:''},
+ ]},
+{num:6, block:'B', theme:'Sortie spécifique montagne — Col de la Luère', start:'2026-07-27',
+ volume:'130–145 km', deniv:'900–1200 m', charge:'Moyenne+',
+ objectif:"Première expérience col long. Gérer l'effort sur 45–60 min de montée continue.",
+ mental:"Sur la Luère : visez régularité, pas vitesse.",
+ days:[
+  {a:'Repos', z:'recup', vol:'0 km', note:''},
+  {a:'Vélotaf (présentiel)', z:'z1', vol:'20 km', note:''},
+  {a:'Vélotaf + Côtes longues 2×10 min', z:'z3', vol:'20+20 km / D+350m', note:'Côte longue soutenue'},
+  {a:'Vélotaf (présentiel)', z:'z1', vol:'20 km', note:''},
+  {a:'Sortie 55 km avec dénivelé', z:'z3', vol:'55 km / D+300m', note:''},
+  {a:'Sortie 90–100 km — Col de la Luère A/R', z:'z3', vol:'90–100 km / D+900m', note:'Simulation effort col'},
+  {a:'Récupération 35 km', z:'z1', vol:'35 km', note:'Z1 strict'},
+ ]},
+{num:7, block:'B', theme:'Peak volume bloc B — Sortie longue 4h', start:'2026-08-03',
+ volume:'145–160 km', deniv:'1200–1500 m', charge:'Élevée',
+ objectif:"Peak volume bloc B. Adaptation à 4h d'effort continu.",
+ mental:"Emportez nourriture en quantité. Gérez les 2 premières heures en Z2 strict.",
+ days:[
+  {a:'Repos', z:'recup', vol:'0 km', note:'Récupération clé avant semaine chargée'},
+  {a:'Vélotaf (présentiel)', z:'z1', vol:'20 km', note:''},
+  {a:'Vélotaf + Seuil 3×8 min', z:'z4', vol:'20+20 km / D+400m', note:'Montée du seuil'},
+  {a:'Vélotaf (présentiel)', z:'z2', vol:'20 km', note:''},
+  {a:'Sortie tempo 60 km', z:'z3', vol:'60 km / D+300m', note:''},
+  {a:'Sortie longue 100–110 km', z:'z2', vol:'100–110 km / D+1200m', note:'Objectif 4h — max D+ du bloc B'},
+  {a:'Récupération 40 km', z:'z1', vol:'40 km', note:''},
+ ]},
+{num:8, block:"B'", theme:'Semaine de récupération', start:'2026-08-10',
+ volume:'75–85 km', deniv:'400–500 m', charge:'Légère ↓',
+ objectif:"Supercompensation bloc B. Les gains physiologiques se consolident cette semaine.",
+ mental:"Vous avez bâti une vraie base. Le Ventoux devient réaliste.",
+ days:[
+  {a:'Repos', z:'recup', vol:'0 km', note:'Récupération complète'},
+  {a:'Vélotaf (présentiel)', z:'z1', vol:'20 km', note:''},
+  {a:'Sortie facile 45 km', z:'z2', vol:'45 km / D+150m', note:'Aucun dépassement'},
+  {a:'Vélotaf (présentiel)', z:'z1', vol:'20 km', note:''},
+  {a:'Repos', z:'recup', vol:'0 km', note:'Fraîcheur week-end'},
+  {a:'Sortie 60 km avec quelques côtes', z:'z2', vol:'60 km / D+400m', note:'Maintien sans fatigue'},
+  {a:'Repos ou balade légère', z:'recup', vol:'0–20 km', note:''},
+ ]},
+{num:9, block:'C', theme:'Sortie spécifique Ventoux — Cols enchaînés', start:'2026-08-17',
+ volume:'150–165 km', deniv:'1800–2200 m', charge:'Élevée',
+ objectif:"Adaptation à l'effort spécifique montagne. Efficacité des filières aérobies en montée.",
+ mental:"Premier enchaînement de deux cols. Apprenez à gérer la fatigue en fin de sortie.",
+ days:[
+  {a:'Repos', z:'recup', vol:'0 km', note:'Récupération après allègement'},
+  {a:'Vélotaf (présentiel)', z:'z1', vol:'20 km', note:''},
+  {a:'Vélotaf + Côtes Z3–Z4 2×15 min', z:'z4', vol:'20+25 km / D+450m', note:'Montée longue Croix-Rousse/Luère'},
+  {a:'Vélotaf (présentiel)', z:'z1', vol:'20 km', note:''},
+  {a:'Sortie 60–65 km avec D+', z:'z3', vol:'60 km / D+500m', note:''},
+  {a:'Sortie 100–110 km — 2 cols enchaînés', z:'z3', vol:'100–110 km / D+1800m', note:'Simulation effort multi-cols'},
+  {a:'Récupération 40–50 km', z:'z1', vol:'40–50 km', note:''},
+ ]},
+{num:10, block:'C', theme:'Sortie PEAK — Simulation partielle Ventoux', start:'2026-08-24',
+ volume:'160–180 km', deniv:'2200–2600 m', charge:'Très élevée',
+ objectif:"Peak de forme. Simulation des conditions du Ventoux en durée et D+.",
+ mental:"Semaine la plus dure du programme. Vous ne pouvez pas être frais — c'est le but.",
+ days:[
+  {a:'Repos', z:'recup', vol:'0 km', note:'Récupération essentielle'},
+  {a:'Vélotaf (présentiel)', z:'z1', vol:'20 km', note:''},
+  {a:'Vélotaf + Intervalles en côte 4×8 min', z:'z4', vol:'20+25 km / D+500m', note:'Seuil en conditions réelles'},
+  {a:'Vélotaf (présentiel)', z:'z1', vol:'20 km', note:''},
+  {a:'Sortie tempo 65 km', z:'z3', vol:'65 km / D+400m', note:''},
+  {a:'Sortie PEAK 110–120 km — Max D+', z:'z3', vol:'110–120 km / D+2200m', note:'Test nutrition + hydratation'},
+  {a:'Récupération 40 km', z:'z1', vol:'40 km', note:'Z1 strict'},
+ ]},
+{num:11, block:'C', theme:'Affûtage progressif', start:'2026-08-31',
+ volume:'120–140 km', deniv:'1500–1800 m', charge:'Moyenne↓',
+ objectif:"Réduction progressive de la charge pour permettre la supercompensation finale.",
+ mental:"Fatigue résiduelle S10 normale — elle partira avec le tapering.",
+ days:[
+  {a:'Repos', z:'recup', vol:'0 km', note:'Récupération peak S10'},
+  {a:'Vélotaf (présentiel)', z:'z1', vol:'20 km', note:''},
+  {a:'Vélotaf + Côtes tempo 30 min', z:'z3', vol:'20+20 km / D+300m', note:'Maintien qualité sans fatigue'},
+  {a:'Vélotaf (présentiel)', z:'z1', vol:'20 km', note:''},
+  {a:'Sortie 50 km facile', z:'z2', vol:'50 km / D+200m', note:''},
+  {a:'Sortie 85–95 km avec D+ modéré', z:'z2', vol:'85–95 km / D+1200m', note:'Plaisir, confirmation de forme'},
+  {a:'Récupération 35 km', z:'z1', vol:'35 km', note:''},
+ ]},
+{num:12, block:"C'", theme:'TAPERING — Semaine du Ventoux', start:'2026-09-07',
+ volume:'60–80 km', deniv:'300–400 m', charge:'Très légère ↓↓',
+ objectif:"Maintien des adaptations physiologiques en réduisant la fatigue. Fraîcheur maximale.",
+ mental:"La tentation de « faire une dernière grosse sortie » est le piège classique. RÉSISTEZ.",
+ days:[
+  {a:'Repos total', z:'recup', vol:'0 km', note:'Début tapering'},
+  {a:'Vélotaf léger', z:'z1', vol:'20 km', note:''},
+  {a:'Sortie 40 km très légère + 2×5 min Z3', z:'z2', vol:'40 km / D+150m', note:'Maintien réactivité neuromusculaire'},
+  {a:'Sortie 15–20 min très légère', z:'z1', vol:'15–20 km', note:'Vérification vélo finale'},
+  {a:'🏔️ VENTOUX — Départ Bédoin 7h30', z:'z4', vol:'21,5 km / D+1614m', note:'JOUR J — objectif 2h25–2h50'},
+  {a:'Récupération post-effort', z:'recup', vol:'—', note:'Repos complet, félicitations !'},
+  {a:'Repos', z:'recup', vol:'—', note:'Profitez du sommet accompli'},
+ ]},
+];
+
+/* ============ TAPER J-7 → J-1 (dates recalées, vrai jour J = vendredi 11 sept.) ============ */
+const taperDays = [
+ {j:'J-7', dateOffset:-7, activite:'Dernière sortie sérieuse — 40–50 km légère avec 2×5 min Z3. Aucun effort intense. Vérification vélo complète.', alim:'Normal++. Dernier jour de glucides élevés.', hydra:'1,5–2 L eau plate', sommeil:'8h min — coucher avant 22h30'},
+ {j:'J-6', dateOffset:-6, activite:'Vélotaf léger ou repos. Pas de séance ajoutée.', alim:'Normal. Bonne part de glucides.', hydra:'2 L eau', sommeil:'8h — évitez les écrans après 22h'},
+ {j:'J-5', dateOffset:-5, activite:'Repos total. Aucun vélo. Marche légère 20 min OK.', alim:'Normal. Évitez les excès de fibres (gaz pendant l\'effort).', hydra:'2 L eau + eau magnésium (Hépar)', sommeil:'8h — massage léger si tension'},
+ {j:'J-4', dateOffset:-4, activite:'Sortie légère 50 km — Z2 très bas, plat/ondulé. 1×5 min Z3 pour maintenir la réactivité.', alim:'Début glucide loading léger : +50g glucides/jour (pâtes, riz, pain).', hydra:'2–2,5 L eau', sommeil:'8h30'},
+ {j:'J-3', dateOffset:-3, activite:'Repos ou marche 30 min. Vérification matériel définitive.', alim:'Glucide loading — manger généreusement.', hydra:'2–2,5 L eau', sommeil:'8h30'},
+ {j:'J-2', dateOffset:-2, activite:'REPOS TOTAL. Zéro vélo. Préparation sacs, matériel, route.', alim:'Glucide loading max. Dîner : pâtes + saumon + pain. Évitez alcool et fritures.', hydra:'2,5 L eau', sommeil:'9h impérativement — bedtime 22h'},
+ {j:'J-1', dateOffset:-1, activite:'Sortie 15–20 min Z1 uniquement. Vérification finale pneus, freins, chambre à air.', alim:'Déj : pâtes/riz + poulet. Dîner : pâtes + légumes cuits + pain + fruit. Pas de crudités. Pas d\'alcool.', hydra:'3 L eau dans la journée', sommeil:'9h min — réveil prévu 5h00–5h30'},
+];
+
+const jourJPlanning = [
+ {h:'5h00', t:'RÉVEIL', d:'Lumière douce, pas de réveil agressif.'},
+ {h:'5h10', t:'Hydratation réveil', d:'500 ml eau plate + pincée de sel + jus de citron.'},
+ {h:'5h15', t:'Petit-déjeuner', d:'Flocons d\'avoine + pain + banane + café + jus d\'orange. ~650–700 kcal / 110g glucides.'},
+ {h:'5h45', t:'Préparation matériel', d:'Vélo, bidons, crème solaire, chamois cream.'},
+ {h:'6h15', t:'Trajet Bédoin', d:'Arriver avant 7h = places de parking disponibles.'},
+ {h:'7h00', t:'Arrivée + échauffement', d:'Assemblage vélo si besoin. Échauffement 15–20 min.'},
+ {h:'7h20', t:'Ravitaillement pré-départ', d:'1 banane + 1 barre + eau. Bidon 1 = eau pure. Bidon 2 = eau + tab. effervescente.'},
+ {h:'7h30', t:'DÉPART ASCENSION', d:'Depuis l\'église de Bédoin.'},
+ {h:'~9h45–10h30', t:'ARRIVÉE SOMMET', d:'Objectif réaliste : 2h15 à 2h50.'},
+ {h:'11h00–12h00', t:'Descente + retour', d:'Gilet coupe-vent AVANT la descente. Freinage doux et progressif.'},
+];
+
+const sections = [
+ {nom:'Section 1 · Bédoin → St-Estève', km:'km 0–6', pente:'5% moy.', fc:'110–130 bpm MAX', regle:"Zone 2 bas. Aucune alim les 30 premières min. Cadence 85–95 rpm. « Je construis mes fondations. »", piege:'Partir avec les cyclistes rapides du parking'},
+ {nom:'Section 2 · St-Estève → Chalet Reynard', km:'km 6–15,5', pente:'9–10% moy.', fc:'135–155 bpm (jamais >160)', regle:"MANGEZ au km 8–10 (1 barre + datte). 600 ml/h. Blocs mentaux de 2 km. Cadence 75–85 rpm.", piege:'Attendre d\'avoir faim — trop tard'},
+ {nom:'Section 3 · Chalet Reynard → Sommet', km:'km 15,5–21,5', pente:'7,5% moy.', fc:'130–155 bpm', regle:"Position basse si vent. Alim seulement au Chalet Reynard, pas après. Terminez le dernier bidon avant le sommet.", piege:'« Ça semble plus plat, j\'accélère ! » → mur à 1800m'},
+];
+
+/* ============ STORAGE ============
+   state.status[dateKey] = 'done' | 'missed'  (une séance non renseignée = absente de l'objet)
+   Utilise window.storage si dispo (environnement Claude), sinon localStorage
+   (nécessaire pour un fonctionnement autonome une fois l'app ajoutée à l'écran d'accueil iOS).
+*/
+let state = {status:{}, checklists:{}};
+function migrateOldFormat(parsed){
+  const merged = Object.assign({status:{}, checklists:{}}, parsed);
+  if(parsed && parsed.done){
+    Object.keys(parsed.done).forEach(k=>{ if(parsed.done[k]) merged.status[k] = 'done'; });
+    delete merged.done;
+  }
+  return merged;
+}
+async function loadState(){
+  try{
+    if(window.storage && typeof window.storage.get === 'function'){
+      const res = await window.storage.get('ventoux_state');
+      if(res && res.value){ state = migrateOldFormat(JSON.parse(res.value)); }
+      return;
+    }
+  }catch(e){ /* pas encore de données côté Claude */ }
+  try{
+    const raw = localStorage.getItem('ventoux_state');
+    if(raw) state = migrateOldFormat(JSON.parse(raw));
+  }catch(e){ /* localStorage indisponible ou vide */ }
+}
+async function saveState(){
+  const json = JSON.stringify(state);
+  try{
+    if(window.storage && typeof window.storage.set === 'function'){
+      await window.storage.set('ventoux_state', json);
+      return;
+    }
+  }catch(e){ /* bascule sur localStorage ci-dessous */ }
+  try{ localStorage.setItem('ventoux_state', json); }catch(e){ console.error(e); }
+}
+function setStatus(key, val){
+  if(val) state.status[key] = val; else delete state.status[key];
+  saveState();
+}
+function toggleChecklist(listId, itemId){
+  if(!state.checklists[listId]) state.checklists[listId] = {};
+  state.checklists[listId][itemId] = !state.checklists[listId][itemId];
+  saveState();
+}
+
+/* ============ HELPERS SEMAINE ============ */
+function getWeekForDate(d){
+  for(const w of weeks){
+    const start = new Date(w.start+'T00:00:00');
+    const end = addDays(start,6);
+    if(d>=start && d<=end) return w;
+  }
+  return null;
+}
+function getDayIndexInWeek(w,d){
+  const start = new Date(w.start+'T00:00:00');
+  return Math.round((d-start)/86400000);
+}
+
+/* ============ RENDER ============ */
+let activeTab = 'today';
+let openWeek = null;
+
+function render(){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const diffDays = Math.round((VENTOUX_DATE - today)/86400000);
+  document.getElementById('countdown-num').textContent = diffDays >= 0 ? diffDays : 'J+' + Math.abs(diffDays);
+  const curWeek = getWeekForDate(today);
+  document.getElementById('week-badge').textContent = curWeek ? ('Semaine ' + curWeek.num + '/12') : (diffDays<0 ? 'Objectif atteint 🎉' : 'Hors programme');
+
+  const main = document.getElementById('main');
+  if(activeTab==='today') main.innerHTML = renderToday(today, curWeek, diffDays);
+  else if(activeTab==='calendar') main.innerHTML = renderCalendar(today);
+  else if(activeTab==='taper') main.innerHTML = renderTaper(today);
+  else if(activeTab==='adjust') main.innerHTML = renderAdjustment(today);
+  else if(activeTab==='nutrition') main.innerHTML = renderNutrition();
+  else if(activeTab==='gear') main.innerHTML = renderGear();
+
+  attachHandlers();
+}
+
+function zoneLabel(z){
+  return {z1:'Z1 Récup',z2:'Z2 Endurance',z3:'Z3 Tempo',z4:'Z4 Seuil',recup:'Repos'}[z] || z;
+}
+
+function renderToday(today, w, diffDays){
+  if(!w){
+    if(diffDays < 0){
+      return `<div class="card"><h2>🏆 Bravo Romain</h2><p>Le Mont Ventoux, c'est fait. Objectif accompli.</p></div>`;
+    }
+    return `<div class="card"><h2>Hors programme</h2><p>Cette date tombe avant le début (22 juin) ou après la fin du plan de 12 semaines.</p></div>`;
+  }
+  const idx = getDayIndexInWeek(w,today);
+  const day = w.days[idx];
+  const dayName = DAY_NAMES[today.getDay()];
+  const key = isoKey(today);
+  const st = state.status[key];
+  const isTuesOrThu = today.getDay()===2 || today.getDay()===4;
+  const j7Cutoff = addDays(VENTOUX_DATE,-7);
+  const renfoActive = isTuesOrThu && today < j7Cutoff;
+  const renfoKey = key+'-renfo';
+  const stRenfo = state.status[renfoKey];
+
+  return `
+  <div class="card">
+    <h2>📍 ${dayName} ${fmtDate(today)}</h2>
+    <div class="meta-strip">
+      <span>Semaine ${w.num}/12 · Bloc ${w.block}</span>
+      <span>${w.theme}</span>
+    </div>
+    <div class="task ${st==='done'?'done':''}">
+      <div class="task-body">
+        <div class="task-title">${day.a}</div>
+        <div class="task-meta"><span class="pill ${day.z}">${zoneLabel(day.z)}</span> &nbsp; ${day.vol}</div>
+        ${day.note ? `<div class="task-note">${day.note}</div>` : ''}
+        <div class="status-controls">
+          <div class="checkbox ${st==='done'?'checked':''}" data-status-key="${key}" data-status-val="done"></div>
+          <button class="miss-btn ${st==='missed'?'active':''}" data-status-key="${key}" data-status-val="missed">⚠️ Manqué</button>
+        </div>
+      </div>
+    </div>
+    ${renfoActive ? `
+    <h3>Renforcement du soir</h3>
+    <div class="task ${stRenfo==='done'?'done':''}">
+      <div class="task-body">
+        <div class="task-title">${today.getDay()===2 ? 'Séance A — Force (squat, fentes, step-up, mollets)' : 'Séance B — Gainage (planche, latéral, chaise murale, superman)'}</div>
+        <div class="task-meta">${today.getDay()===2 ? '35–40 min' : '25–30 min'} · après le vélotaf</div>
+        <div class="status-controls">
+          <div class="checkbox ${stRenfo==='done'?'checked':''}" data-status-key="${renfoKey}" data-status-val="done"></div>
+          <button class="miss-btn ${stRenfo==='missed'?'active':''}" data-status-key="${renfoKey}" data-status-val="missed">⚠️ Manqué</button>
+        </div>
+      </div>
+    </div>` : (isTuesOrThu ? `<div class="info">Pas de renforcement — semaine du Ventoux (arrêt à J-7).</div>` : '')}
+    <div class="tip">💡 <b>Objectif physio de la semaine :</b> ${w.objectif}</div>
+    <div class="tip">🧠 ${w.mental}</div>
+  </div>
+
+  <div class="card">
+    <h2>Vue rapide semaine ${w.num}</h2>
+    ${w.days.map((d,i)=>{
+      const dt = addDays(new Date(w.start+'T00:00:00'), i);
+      const isToday = sameDay(dt,today);
+      return `<div class="day-line ${isToday?'today':''}">
+        <span class="d">${DAY_SHORT[dt.getDay()]} ${dt.getDate()}</span>
+        <span class="a">${d.a}</span>
+        <span class="pill ${d.z}" style="margin-left:6px;">${zoneLabel(d.z).split(' ')[0]}</span>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function renderCalendar(today){
+  let html = `<div class="card" style="padding:10px 16px;">`;
+  weeks.forEach(w=>{
+    const start = new Date(w.start+'T00:00:00');
+    const end = addDays(start,6);
+    const isCurrent = today>=start && today<=end;
+    const isOpenW = openWeek===w.num || isCurrent;
+    html += `
+    <div>
+      <div class="week-header ${isCurrent?'today':''}" data-week="${w.num}">
+        <div>
+          <div class="week-title">Semaine ${w.num} · ${w.theme}</div>
+          <div class="week-sub">${fmtDate(start)} → ${fmtDate(end)} · ${w.volume} · D+${w.deniv} · Charge ${w.charge}</div>
+        </div>
+        <div class="chev ${isOpenW?'open':''}">▶</div>
+      </div>
+      <div class="week-body ${isOpenW?'open':''}">
+        ${w.days.map((d,i)=>{
+          const dt = addDays(start,i);
+          const isToday = sameDay(dt,today);
+          return `<div class="day-line ${isToday?'today':''}">
+            <span class="d">${DAY_SHORT[dt.getDay()]} ${dt.getDate()}</span>
+            <span class="a">${d.a} <span style="color:var(--text-dim);">— ${d.vol}</span></span>
+          </div>`;
+        }).join('')}
+        <div class="tip" style="margin-top:10px;">${w.objectif}</div>
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function renderTaper(today){
+  const start = addDays(VENTOUX_DATE,-7);
+  return `
+  <div class="install-tip">Semaine décisive : le vrai 11 septembre 2026 tombe un <b>vendredi</b> (le PDF indiquait "mercredi" par erreur). Dates recalées ci-dessous.</div>
+  <div class="card">
+    <h2>🎯 J-7 à J-1</h2>
+    ${taperDays.map(t=>{
+      const dt = addDays(VENTOUX_DATE, t.dateOffset);
+      const isToday = sameDay(dt,today);
+      return `<div class="taper-item" style="${isToday?'background:rgba(74,222,128,0.08);border-radius:10px;padding-left:8px;':''}">
+        <div class="taper-day"><div class="j">${t.j}</div><div class="dt">${DAY_SHORT[dt.getDay()]} ${fmtDate(dt)}</div></div>
+        <div class="taper-content">
+          <b>Vélo :</b> ${t.activite}<br>
+          <b>Alim :</b> ${t.alim}<br>
+          <b>Hydratation :</b> ${t.hydra} · <b>Sommeil :</b> ${t.sommeil}
+        </div>
+      </div>`;
+    }).join('')}
+    <div class="taper-item" style="background:rgba(251,146,60,0.1); border-radius:10px; padding:10px 8px;">
+      <div class="taper-day"><div class="j" style="color:var(--green);">J-0</div><div class="dt">Ven ${fmtDate(VENTOUX_DATE)}</div></div>
+      <div class="taper-content"><b>🏔️ VENTOUX — départ 7h30 depuis Bédoin</b></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>⏰ Planning horaire Jour J</h2>
+    ${jourJPlanning.map(p=>`<div class="row"><div style="width:88px;font-weight:700;color:var(--orange);font-size:12.5px;">${p.h}</div><div style="flex:1;"><div style="font-weight:600;font-size:13.5px;">${p.t}</div><div style="font-size:12px;color:var(--text-dim);">${p.d}</div></div></div>`).join('')}
+  </div>
+
+  <div class="card">
+    <h2>🗺️ Gestion par section</h2>
+    ${sections.map(s=>`
+      <div style="margin-bottom:14px;">
+        <div style="font-weight:700; font-size:13.5px; color:var(--green);">${s.nom}</div>
+        <div class="meta-strip"><span>${s.km}</span><span>${s.pente}</span><span>FC ${s.fc}</span></div>
+        <div style="font-size:13px; margin-top:4px; line-height:1.5;">${s.regle}</div>
+        <div class="warn" style="margin-top:6px;">⚠️ Piège : ${s.piege}</div>
+      </div>
+    `).join('')}
+  </div>
+
+  <div class="card">
+    <h2>✅ Check-list matériel J-7 à J-3</h2>
+    ${renderChecklist('materiel', [
+      'Vélo : châssis, rayons, guidon serré',
+      'Freins : patins, câbles, efficacité avant/arrière',
+      'Chaîne nettoyée et graissée',
+      'Dérailleur : passage fluide toutes vitesses',
+      'Cassette : présence du 32T ou 34T minimum',
+      'Pneus : état + pression (70–75 PSI)',
+      '2 bidons 750ml propres',
+      'Chambre à air de rechange + rustines',
+      'Mini-pompe CO2 ou kit fonctionnel',
+      '2 démonte-pneus + multi-tool',
+      'Cuissard + chamois testé sur longue sortie',
+      'Gilet coupe-vent compact',
+      'Casque, lunettes UV, gants fins',
+      'Crème solaire SPF50 + chamois cream',
+      'GPS / appli avec tracé Bédoin chargé offline',
+      'Carte vitale + 20€ en poche maillot',
+    ])}
+  </div>
+
+  <div class="card">
+    <h2>✅ Check-list veille (J-1)</h2>
+    ${renderChecklist('veille', [
+      'Vélo chargé dans le véhicule',
+      'Bidon 1 = eau pure, bidon 2 = eau + tablette effervescente',
+      'Ravitaillement préparé (4–6 barres, dattes, gels)',
+      'Tenue posée : cuissard, maillot, chaussettes, gants',
+      'Crème solaire + chamois cream prêtes',
+      'Réveil posé à 5h00 + réveil de secours',
+      'Dîner pris à 19h30 max',
+      'Téléphone chargé à 100%',
+      'Parking Bédoin repéré',
+      'Coucher avant 21h30',
+    ])}
+  </div>
+
+  <div class="card">
+    <h2>✅ Check-list matin du départ</h2>
+    ${renderChecklist('matin', [
+      'Réveil 5h00 — eau tiède + sel + citron',
+      'Petit-déjeuner 5h15',
+      'Crème solaire + chamois cream appliquées',
+      'Tenue complète + casque + lunettes + gants',
+      'Bidons remplis dans les porte-bidons',
+      'Départ voiture 6h15',
+      'Échauffement 15 min à Bédoin',
+      'DÉPART ASCENSION 7h30',
+    ])}
+  </div>
+  `;
+}
+
+function renderChecklist(id, items){
+  return items.map((label,i)=>{
+    const checked = state.checklists[id] && state.checklists[id][i];
+    return `<div class="chk-list-item ${checked?'done':''}" data-checklist="${id}" data-item="${i}">
+      <div class="checkbox ${checked?'checked':''}" style="width:20px;height:20px;flex-shrink:0;"></div>
+      <span>${label}</span>
+    </div>`;
+  }).join('');
+}
+
+let nutritionSub = 'avant';
+function renderNutrition(){
+  const tabs = [['avant','Avant'],['pendant','Pendant'],['apres','Après'],['jourJ','Jour J']];
+  let content = '';
+  if(nutritionSub==='avant'){
+    content = `
+    <div class="card"><h2>🕐 Avant une sortie</h2>
+      <table class="table-mini">
+        <tr><th>Délai</th><th>Repas</th></tr>
+        <tr><td>3h avant</td><td>Repas complet : riz/pâtes + protéines légères + légumes cuits</td></tr>
+        <tr><td>2h avant</td><td>Flocons d'avoine + lait + banane + miel</td></tr>
+        <tr><td>1h avant</td><td>Banane + pain complet + confiture</td></tr>
+        <tr><td>30 min avant</td><td>1 barre céréales ou gel + eau</td></tr>
+        <tr><td>10 min avant</td><td>Eau seulement</td></tr>
+      </table>
+      <div class="tip">☕ Café : 1–2 tasses 90 min avant améliore la mobilisation des graisses et la vigilance.</div>
+    </div>`;
+  } else if(nutritionSub==='pendant'){
+    content = `
+    <div class="card"><h2>🚴 Pendant l'effort</h2>
+      <h3>Sortie 1h30–3h</h3>
+      <table class="table-mini">
+        <tr><td>Glucides</td><td>50–60 g/h (1 banane + 1 barre)</td></tr>
+        <tr><td>Eau</td><td>500–750 ml/h</td></tr>
+        <tr><td>Sodium</td><td>300–500 mg/h</td></tr>
+        <tr><td>Timing</td><td>Toutes les 20–30 min</td></tr>
+      </table>
+      <h3>Sortie &gt;3h (dont le Ventoux)</h3>
+      <table class="table-mini">
+        <tr><td>Glucides</td><td>70–90 g/h après 90 min</td></tr>
+        <tr><td>Eau</td><td>750 ml–1 L/h</td></tr>
+        <tr><td>Sodium</td><td>500–700 mg/h</td></tr>
+        <tr><td>Caféine</td><td>100–200mg à 2h–2h30 d'effort</td></tr>
+      </table>
+      <div class="warn">⚠️ L'hypoglycémie et la déshydratation sont les 2 causes d'abandon les plus fréquentes.</div>
+    </div>
+    <div class="card"><h2>🛒 Ravito supermarché</h2>
+      <table class="table-mini">
+        <tr><td>Banane</td><td>25g glucides — idéal poche maillot</td></tr>
+        <tr><td>Dattes Medjool</td><td>60g/100g — compactes, longues sorties</td></tr>
+        <tr><td>Barres céréales</td><td>30–35g — faciles à mâcher</td></tr>
+        <tr><td>Pain d'épice</td><td>65g/100g — excellent rapport glucides/légèreté</td></tr>
+        <tr><td>Compote gourde</td><td>20g — liquide, facile en montée</td></tr>
+        <tr><td>Tablettes Isostar</td><td>sodium + potassium — dans bidon n°2</td></tr>
+      </table>
+    </div>`;
+  } else if(nutritionSub==='apres'){
+    content = `
+    <div class="card"><h2>🔄 Récupération</h2>
+      <table class="table-mini">
+        <tr><th>Timing</th><th>Quoi</th></tr>
+        <tr><td>0–30 min</td><td>Lait chocolaté (250ml) + banane — 50g glucides + 20g protéines</td></tr>
+        <tr><td>1h30–2h</td><td>Repas complet équilibré</td></tr>
+        <tr><td>Lendemain</td><td>Petit-déj riche en glucides</td></tr>
+      </table>
+      <div class="warn">⚠️ Ne sautez JAMAIS la fenêtre de 30 min post-effort.</div>
+    </div>`;
+  } else if(nutritionSub==='jourJ'){
+    content = `
+    <div class="card"><h2>🍳 Petit-déj Jour J — 5h15</h2>
+      <ul style="font-size:13.5px; line-height:1.9; padding-left:18px; margin:0;">
+        <li>2–3 tranches pain de mie/blanc + beurre de cacahuète</li>
+        <li>1 bol flocons d'avoine + lait + banane écrasée + miel</li>
+        <li>1 café fort (200ml)</li>
+        <li>1 verre jus d'orange pressé</li>
+        <li>Eau : 300–400 ml pendant le repas</li>
+      </ul>
+      <div class="tip">~650–700 kcal / 110g glucides / 20g protéines. Ne testez rien de nouveau ce matin-là.</div>
+    </div>`;
+  }
+  return `<div class="subtabs">${tabs.map(([id,label])=>`<button class="${nutritionSub===id?'active':''}" data-nutsub="${id}">${label}</button>`).join('')}</div>${content}`;
+}
+
+/* ============ AJUSTEMENT DU PROGRAMME (logique chapitre 13 du guide) ============ */
+function computeWeekStats(w, today){
+  const start = new Date(w.start+'T00:00:00');
+  const end = addDays(start,6);
+  let total=0, done=0, missed=0, unresolved=0;
+  w.days.forEach((d,i)=>{
+    if(d.z==='recup') return; // un repos ne se "manque" pas
+    const dt = addDays(start,i);
+    if(dt > today) return; // pas encore eu lieu
+    total++;
+    const key = isoKey(dt);
+    const st = state.status[key];
+    if(st==='done') done++;
+    else if(st==='missed') missed++;
+    else unresolved++;
+  });
+  return {week:w, total, done, missed, unresolved, complete: end < today, started: start <= today};
+}
+
+function getUnresolvedSessions(today, daysBack=21){
+  const list = [];
+  for(let i=1;i<=daysBack;i++){
+    const dt = addDays(today,-i);
+    const w = getWeekForDate(dt);
+    if(!w) continue;
+    const idx = getDayIndexInWeek(w,dt);
+    const day = w.days[idx];
+    if(day.z==='recup') continue;
+    const key = isoKey(dt);
+    if(!state.status[key]){
+      list.push({key, dt, day, week:w});
+    }
+  }
+  return list.reverse();
+}
+
+function renderAdjustment(today){
+  const unresolved = getUnresolvedSessions(today, 21);
+  const weekStatsList = weeks.map(w=>computeWeekStats(w,today)).filter(s=>s.started);
+  const recentStats = weekStatsList.slice(-4);
+
+  // Semaines "manquées" = >=50% des séances clés non faites (manquées + non renseignées), parmi les semaines terminées
+  let consecutive = 0, consecutiveBlock = null;
+  for(let i=weekStatsList.length-1;i>=0;i--){
+    const s = weekStatsList[i];
+    if(!s.complete) continue;
+    if(s.total===0) continue;
+    const ratioNonFait = (s.missed+s.unresolved)/s.total;
+    if(ratioNonFait >= 0.5){
+      consecutive++;
+      if(!consecutiveBlock) consecutiveBlock = s.week.block;
+    } else break;
+  }
+
+  let banner;
+  if(consecutive===0){
+    banner = {cls:'ok', html:`✅ <b>Tout est en ordre.</b> Continuez le programme tel quel — aucune séance de rattrapage nécessaire.`};
+  } else if(consecutive===1){
+    let extra = '';
+    if(consecutiveBlock==='C' || consecutiveBlock==="C'") extra = ` Cette semaine manquée était en bloc C (spécifique montagne) : réduisez votre ambition d'environ 10 min sur le temps cible au sommet.`;
+    banner = {cls:'warn', html:`🟡 <b>1 semaine manquée — pas de problème.</b> Ne rattrapez pas le volume perdu. Reprenez cette semaine à environ <b>70% du volume prévu</b>, puis reprenez le rythme normal la semaine suivante.${extra}`};
+  } else if(consecutive===2){
+    banner = {cls:'warn', html:`🟠 <b>2 semaines consécutives manquées.</b> Réajustez l'objectif : visez le scénario "prudent" (2h50–3h15) plutôt que "réaliste" le jour J, et reprenez progressivement à 70% de volume avant de remonter en charge.`};
+  } else {
+    banner = {cls:'danger', html:`🔴 <b>${consecutive} semaines consécutives manquées.</b> Le plan de secours recommande de reconsidérer l'objectif : viser uniquement à terminer l'ascension sans objectif de temps, ou envisager un report en 2027 si c'est possible pour vous. Reprenez très progressivement.`};
+  }
+
+  const alertItems = ['FC de repos élevée (+5 bpm vs normale)','Mauvais sommeil 3 nuits consécutives','Douleur musculaire persistante (pas de simples courbatures)','Démotivation profonde et durable'];
+  const alertChecked = state.checklists['alerte'] || {};
+  const alertCount = alertItems.reduce((n,_,i)=> n + (alertChecked[i]?1:0), 0);
+
+  return `
+  <div class="banner ${banner.cls}">${banner.html}</div>
+
+  ${unresolved.length ? `
+  <div class="card">
+    <h2>📝 Séances non renseignées (${unresolved.length})</h2>
+    <div class="task-note" style="margin-bottom:8px;">Marquez rapidement ce qui s'est passé — ça affine les recommandations ci-dessous.</div>
+    ${unresolved.map(u=>`
+      <div class="quick-item">
+        <div class="qi-info">
+          <div class="qi-date">${DAY_SHORT[u.dt.getDay()]} ${fmtDate(u.dt)} · Sem. ${u.week.num}</div>
+          <div class="qi-name">${u.day.a}</div>
+        </div>
+        <div class="quick-actions">
+          <button class="qa-btn ok" data-quick-key="${u.key}" data-quick-val="done">Fait</button>
+          <button class="qa-btn no" data-quick-key="${u.key}" data-quick-val="missed">Manqué</button>
+        </div>
+      </div>
+    `).join('')}
+  </div>` : `<div class="card"><h2>📝 Séances non renseignées</h2><div class="tip">Rien à rattraper sur les 3 dernières semaines. 👍</div></div>`}
+
+  <div class="card">
+    <h2>📊 Bilan des dernières semaines</h2>
+    ${recentStats.map(s=>{
+      const pctDone = s.total ? Math.round(s.done/s.total*100) : 0;
+      const pctMissed = s.total ? Math.round(s.missed/s.total*100) : 0;
+      const pctUnres = 100-pctDone-pctMissed;
+      return `<div class="week-stat-row">
+        <div class="wn">S${s.week.num}</div>
+        <div class="mini-bar">
+          <div class="seg-done" style="width:${pctDone}%"></div>
+          <div class="seg-missed" style="width:${pctMissed}%"></div>
+          <div class="seg-unresolved" style="width:${pctUnres}%"></div>
+        </div>
+        <div style="font-size:11px; color:var(--text-dim); width:64px; text-align:right;">${s.done}/${s.total} faites</div>
+      </div>`;
+    }).join('')}
+    <div class="task-note" style="margin-top:8px;">🟢 fait · 🔴 manqué · ⚪ non renseigné</div>
+  </div>
+
+  <div class="card">
+    <h2>🚦 Auto-diagnostic — signes d'alerte</h2>
+    <div class="task-note" style="margin-bottom:6px;">Cochez ce qui s'applique en ce moment.</div>
+    ${alertItems.map((label,i)=>{
+      const checked = !!alertChecked[i];
+      return `<div class="alert-check">
+        <div class="checkbox ${checked?'checked':''}" style="width:20px;height:20px;flex-shrink:0;" data-checklist="alerte" data-item="${i}"></div>
+        <span>${label}</span>
+      </div>`;
+    }).join('')}
+    ${alertCount>=2 ? `<div class="banner danger" style="margin-top:10px;">🔴 ${alertCount} signes présents : ces indices évoquent un sur-entraînement. Action recommandée : 3–5 jours de repos total. En cas de douleur articulaire, consultez un médecin du sport.</div>` : `<div class="tip" style="margin-top:4px;">Moins de 2 signes = fatigue normale d'entraînement.</div>`}
+  </div>
+
+  <div class="card">
+    <h2>🌧️ Semaines pluvieuses / indisponibilité</h2>
+    <div class="tip">Coupe-vent imperméable + gants de pluie : les routes lyonnaises restent praticables sous la pluie. Si vraiment dangereux (orage, verglas), remplacez par 45 min de vélo d'appartement fractionné (équivaut à ~1h30 de sortie facile).</div>
+  </div>
+
+  <div class="card">
+    <h2>📉 Difficulté à tenir le volume</h2>
+    <div class="tip">Le dénivelé compte plus que le kilométrage plat : 60 km avec 1000 m D+ vaut mieux que 100 km à plat pour le Ventoux. Si besoin, fractionnez la sortie longue (2h samedi + 2h dimanche). Gardez en priorité les séances de qualité (côtes, seuil), même raccourcies.</div>
+  </div>
+  `;
+}
+
+function renderGear(){
+  return `
+  <div class="card">
+    <h2>🔧 Triban RC520 2023 — check</h2>
+    <table class="table-mini">
+      <tr><td>Cadre</td><td>Aluminium 6061, ~9,2kg — ✓ correct</td></tr>
+      <tr><td>Groupe</td><td>Shimano Claris/Sora — vérifier câbles + chaîne</td></tr>
+      <tr><td>Pédalier</td><td>Compact 50/34 — ✓ idéal</td></tr>
+      <tr><td>Cassette</td><td>⚠️ Vérifier 32 dents minimum — voir ci-dessous</td></tr>
+      <tr><td>Freins</td><td>Étriers — régler patins, freinage intense en descente</td></tr>
+      <tr><td>Selle</td><td>Tester sur 3h+, gel seat cover si inconfort</td></tr>
+    </table>
+    <div class="warn">⚠️ Action prioritaire : si vous avez une cassette 11-28, faites-la remplacer par une 11-32 ou 11-34 avant fin juin (25–50€ chez le vélociste). Compatible avec le Triban RC520.</div>
+  </div>
+
+  <div class="card">
+    <h2>⚙️ Développements recommandés</h2>
+    <table class="table-mini">
+      <tr><th>Config</th><th>Ratio</th><th>Verdict</th></tr>
+      <tr><td>34T / 32T</td><td>1,06 (~12 km/h @75rpm)</td><td>✓ Acceptable</td></tr>
+      <tr><td>34T / 34T</td><td>1,00 (~11,5 km/h)</td><td>✓✓ Recommandé</td></tr>
+      <tr><td>34T / 36T</td><td>0,94 (~10,5 km/h)</td><td>✓✓✓ Idéal débutant</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🛞 Pneus</h2>
+    <table class="table-mini">
+      <tr><td>Pneu</td><td>700×28c si montage possible</td></tr>
+      <tr><td>Pression montée</td><td>70–75 PSI (4,8–5,2 bar) pour 70kg</td></tr>
+      <tr><td>Descente</td><td>Ne pas dégonfler — freinage étrier = pression stable</td></tr>
+      <tr><td>Chambre</td><td>1 de rechange obligatoire en sacoche</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🎒 Sac Jour J</h2>
+    <h3>Ravitaillement</h3>
+    <p style="font-size:13px; line-height:1.7; margin:0 0 10px;">2 bidons 750ml (eau + eau salée) · 4–6 barres/dattes/pain d'épice · 2 gels testés · monnaie pour café Chalet Reynard</p>
+    <h3>Vêtements</h3>
+    <p style="font-size:13px; line-height:1.7; margin:0 0 10px;">Cuissard + chamois · maillot MC · gilet coupe-vent compressible · chaussettes fines · gants fins · lunettes + casque</p>
+    <h3>Secours</h3>
+    <p style="font-size:13px; line-height:1.7; margin:0;">Chambre à air + rustines · pompe CO2 · 2 démonte-pneus · multi-tool · téléphone + batterie · carte vitale + 20€</p>
+  </div>`;
+}
+
+/* ============ EVENTS ============ */
+function attachHandlers(){
+  document.querySelectorAll('[data-status-key]').forEach(el=>{
+    el.onclick = ()=>{
+      const key = el.getAttribute('data-status-key');
+      const val = el.getAttribute('data-status-val');
+      const cur = state.status[key];
+      setStatus(key, cur===val ? null : val);
+      render();
+    };
+  });
+  document.querySelectorAll('[data-quick-key]').forEach(el=>{
+    el.onclick = ()=>{
+      setStatus(el.getAttribute('data-quick-key'), el.getAttribute('data-quick-val'));
+      render();
+    };
+  });
+  document.querySelectorAll('[data-week]').forEach(el=>{
+    el.onclick = ()=>{
+      const n = parseInt(el.getAttribute('data-week'));
+      openWeek = openWeek===n ? null : n;
+      render();
+    };
+  });
+  document.querySelectorAll('[data-checklist]').forEach(el=>{
+    el.onclick = ()=>{
+      toggleChecklist(el.getAttribute('data-checklist'), el.getAttribute('data-item'));
+      render();
+    };
+  });
+  document.querySelectorAll('[data-nutsub]').forEach(el=>{
+    el.onclick = ()=>{ nutritionSub = el.getAttribute('data-nutsub'); render(); };
+  });
+}
+
+document.querySelectorAll('nav button').forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeTab = btn.getAttribute('data-tab');
+    render();
+  };
+});
+
+/* ============ INIT ============ */
+(async ()=>{
+  await loadState();
+  render();
+})();
+</script>
+</body>
+</html>
